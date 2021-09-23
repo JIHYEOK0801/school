@@ -1,0 +1,4 @@
+﻿  4-힙과힙정렬-문제2.c
+C:\Users\wkdwl\Desktop\code\school\algorithm\Project1\Project1\4-힙과힙정렬-문제2.c(56,71): warning C4098: 'downHeap': 'void' 함수에서 값을 반환하고 있습니다.
+C:\Users\wkdwl\Desktop\code\school\algorithm\Project1\Project1\4-힙과힙정렬-문제2.c(67,53): warning C4098: 'downHeap': 'void' 함수에서 값을 반환하고 있습니다.
+  Project1.vcxproj -> C:\Users\wkdwl\Desktop\code\school\algorithm\Project1\Debug\Project1.exe
