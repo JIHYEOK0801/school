@@ -4,75 +4,55 @@
 * 2. '내부노드가 하나도 없는 경우는 없다' ---> heap 원소가 2개 이상이다.
 * 3. '중복 숫자는 없다고 가정' ---> 중복 생각 x
 */
+/*
+* 최소시간 수정용
+* 1. 노드 1개마다 자식 2개와 비교하면서 내려가게 되면 대략 O(2N) 정도
+* 2. 최소힙, 최대힙, 힙구조를 보장받지 못한상태에서 노드를 내려가면서 한개만 선택 불가. O(logN) 까지 줄이는 건 불가능이라 판단
+* 3. 끝에서부터 하나씩 부모와 비교하는것도 O(N)정도 나오지 않을까?
+*/
+
+
 #pragma warning (disable:4996)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-int isMinheap(int* heap, int n) {
-	int smaller = heap[2];
-	if (n > 2) {
-		if (heap[3] < smaller) {
-			smaller = heap[3];
-		}
-	}
 
-	if (heap[1] < smaller) return 1;
-	else return 0;
-}
 
-int isMinheap__CheckAll(int* heap, int n) {
-	int smaller = heap[2];
-	int i;
-	for (i = 2; i <= n; i++) {
-		if (heap[i] < smaller)
-			smaller = heap[i];
-	}
-	if (heap[1] < smaller)
-		return 1;
-	else return 0;
-}
 
-int is_heap(int* heap, int n) {
-	int i;
-	int smaller;
-	for (i = n; i >= 1; i--) {
-		if ((i * 2 > n) && (i * 2 + 1 > n)) continue;
-		
-		smaller = i * 2;
-		if ((i * 2 + 1) <= n) {
-			if (heap[i * 2 + 1] < heap[smaller]) {
-				smaller = i * 2 + 1;
-			}
-		}
-
-		if (heap[i] > heap[smaller]) return 0;
-	}
+int isParentSmaller(int* heap, int parent, int child) {
+	if (heap[parent] > heap[child])
+		return 0;
 	return 1;
 }
-
-
-
+void print(char* answer, int lastinnernode) {
+	printf("%s\n%d", answer, lastinnernode);
+}
 int main() {
-	int n, i, number;
-	int* heap;
+	int N, i, number, *heap;
 	char answer[4];
 
-	scanf("%d", &n);
-	heap = (int*)malloc(sizeof(int) * (n + 1));
-	for (i = 1; i < n + 1; i++) {
+	scanf("%d", &N);
+	
+	// heap 초기화
+	heap= (int*)malloc(sizeof(int) * (N + 1));
+	
+
+	for (i = 1; i < N + 1; i++) {
 		scanf("%d", &number);
 		heap[i] = number;
 	}
 
-	if (is_heap(heap,n) && isMinheap(heap, n)) {
-		strcpy(answer, "Yes");
-	}
-	else {
-		strcpy(answer, "No");
-	}
+	// 마지막 내부노드부터 색출
+	int lastinnernode = heap[N / 2];
 
-	printf("%s\n", answer);
-	printf("%d", heap[n / 2]);
-
-	free(heap);
+	// 최소힙인지 검사
+	
+	for (i = N; i >= 2; i--) {
+		if (!isParentSmaller(heap, i / 2, i)){
+			print("No", lastinnernode);
+			return;
+		}
+			
+	}
+	print("Yes", lastinnernode);
 }
