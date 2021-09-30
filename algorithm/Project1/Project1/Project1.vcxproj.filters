@@ -69,5 +69,11 @@
     <ClCompile Include="4-힙과힙정렬-문제2.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="과제10928-문제1.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="과제10928-문제2.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
