@@ -75,10 +75,13 @@
     <ClCompile Include="stack.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="과제10928-문제1.c">
+    <ClCompile Include="과제1-0928-문제1.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="과제10928-문제2.c">
+    <ClCompile Include="과제1-0928-문제2.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="과제2-0928-문제1.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

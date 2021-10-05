@@ -29,20 +29,29 @@ int* inPlacePartition(int arr[], int l, int r, int k) {
 	int j = r - 1; // r은 pivot이 위치하므로 r-1
 
 	while (i <= j) {
-		while (i <= j && arr[i] <= p) 
+		while (i <= j && arr[i] < p) 
 			i = i + 1;
 		while (j >= i && arr[j] >= p)
 			j = j - 1;
 		if (i < j)
 			swapElement(arr, i, j);
 	}
+	int a = i;
+	j = r - 1;
+	while (i <= j) {
+		while (i <= j && arr[i] == p) {
+			i += 1;
+		}
+		while (j >= i && arr[j] > p) {
+			j -= 1;
+		}
+		if (i < j)
+			swapElement(arr, i, j);
+	}
 	swapElement(arr, i, r); // pivot 제자리로 위치
+	int b = i;
 
-	int a = i, b = i;
-	while (arr[a] == arr[i])
-		a -= 1;
-	while (arr[b] == arr[i])
-		b += 1;
+	
 
 	int* ab = (int*)malloc(sizeof(int) * 2);
 	if (ab == NULL) {
@@ -61,8 +70,8 @@ void inPlaceQuickSort(int arr[], int l, int r) {
 	int* ab = inPlacePartition(arr, l, r, k);
 	//print(arr, 8);
 	//printf("[%d %d][%d %d] 구간 inPlaceQuickSort 재귀 시작합니다.\n\n",l, ab[0], ab[1], r);
-	inPlaceQuickSort(arr, l, ab[0]);
-	inPlaceQuickSort(arr, ab[1], r);
+	inPlaceQuickSort(arr, l, ab[0] - 1);
+	inPlaceQuickSort(arr, ab[1] + 1, r);
 	free(ab);
 }
 
