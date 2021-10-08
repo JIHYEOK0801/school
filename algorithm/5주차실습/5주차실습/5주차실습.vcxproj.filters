@@ -84,5 +84,14 @@
     <ClCompile Include="과제2-0928-문제1.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="6-사전-문제1.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="6-사전-문제2.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="6-사전-문제3.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
