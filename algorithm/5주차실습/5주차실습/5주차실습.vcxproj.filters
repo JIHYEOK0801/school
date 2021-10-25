@@ -93,5 +93,14 @@
     <ClCompile Include="6-사전-문제3.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="7-탐색트리-문제1.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="7-탐색트리-문제2.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="7-탐색트리-문제3.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
