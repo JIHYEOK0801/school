@@ -9,9 +9,6 @@ typedef struct node {
 	struct node* parent, * lchild, * rchild;
 }node;
 
-// root 접근성용이를 위해 전역변수 설정
-node* root = NULL;
-
 // node 생성 후 바로 return. 초기화하는 변수는 없음.
 node* getNode() {
 	node* p = (node*)malloc(sizeof(node));
@@ -24,15 +21,13 @@ void setNode(node* w, int k) {
 }
 
 // 트리 초기화 함수. 외부노드 한개만 존재한다.
-void init() {
-	if (root == NULL) {
-		root = getNode();
-
-		root->lchild = NULL;
-		root->rchild = NULL;
-		root->parent = NULL;
-		root->height = 0;
-	}
+node* init() {
+	node* newnode = getNode();
+	newnode->lchild = NULL;
+	newnode->rchild = NULL;
+	newnode->parent = NULL;
+	newnode->height = 0;
+	return newnode;
 }
 
 // node w가 root인지 확인
@@ -102,12 +97,12 @@ void expandExternal(node* z) {
 }
 
 // 외부노드인 z를 없애는 함수.
-node* reduceExternal(node* z) {
+node* reduceExternal(node **root,node* z) {
 	node* w = z->parent;
 	node* zs = sibling(z);
 	node* g;
 	if (isRoot(w)) {
-		root = zs;
+		*root = zs;
 		zs->parent = NULL;
 	}
 	else {
@@ -178,7 +173,7 @@ void updateParentChild(node* p, node* c1, node* c2) {
 	c2->parent = p;
 }
 
-node* restructure(node* x, node* y, node* z) {
+node* restructure(node **root, node* x, node* y, node* z) {
 	//중위 순회 순서 a,b,c 찾기
 	node* a, * b, * c;
 	node* t0, * t1, * t2, * t3;
@@ -217,7 +212,7 @@ node* restructure(node* x, node* y, node* z) {
 		else z->parent->rchild = b;
 	}
 	else {
-		root = b;
+		*root = b;
 	}
 
 	//4. t0, t1을 a의 왼쪽 오른쪽. t2, t3을 c의 왼쪽 오른쪽. a, c를 b의 왼쪽 오른쪽
@@ -230,41 +225,41 @@ node* restructure(node* x, node* y, node* z) {
 }
 
 //균형검사 수행, 불균형시 개조를 통해 높이균형 속성 회복
-void searchAndFixAfterInsertion(node* w) {
+void searchAndFixAfterInsertion(node** root, node* w) {
 	//루트까지 갔는데 불균형 노드가 없어서 root->parent인 NULL이 반환 되었을 때
 	if (w == NULL) return;
 	
 	node* z, * y, * x;
 	//w가 균형 노드일 때
-	if (isBalanced(w)) searchAndFixAfterInsertion(w->parent);
+	if (isBalanced(w)) searchAndFixAfterInsertion(root, w->parent);
 
 	//w가 불균형 노드일 때
 	else {
 		z = w;
 		y = higherChild(z);
 		x = higherChild(y); // x != w 일수 있음
-		restructure(x, y, z);
-		updateHeight(root);
+		restructure(root, x, y, z);
+		updateHeight(*root);
 		return;
 	}
 }
 
 // key = k 인 node 삽입
-void insertItem(int k) {
-	node* w = treeSearch(root, k);
+void insertItem(node **root, int k) {
+	node* w = treeSearch(*root, k);
 	if (isInternal(w))
 		return;
 	else {
 		setNode(w, k);
 		expandExternal(w);
-		updateHeight(root);
-		searchAndFixAfterInsertion(w);
+		updateHeight(*root);
+		searchAndFixAfterInsertion(root, w);
 		//print(root); //node를 삽입할때마다 print 가능.
 	}
 }
 
 // key == k인 노드 검색 후 key return
-int findElement(int k) {
+int findElement(node* root, int k) {
 	node* w = treeSearch(root, k);
 	if (isExternal(w))
 		return -1;
@@ -286,8 +281,8 @@ node* inOrderSucc(node* w) {
 }
 
 // key == k인 node를 삭제하는 함수.
-int removeElement(int k) {
-	node* w = treeSearch(root, k);
+int removeElement(node **root, int k) {
+	node* w = treeSearch(*root, k);
 
 	// key == k 인 노드가 없을 때
 	if (isExternal(w)) return -1;
@@ -300,17 +295,23 @@ int removeElement(int k) {
 	
 	node* y, *zs;
 	if (isExternal(z))
-		zs = reduceExternal(z);
+		zs = reduceExternal(root, z);
 	else {
 		y = inOrderSucc(w);
 		z = y->lchild;
 		setNode(w, y->key);
-		zs = reduceExternal(z);
+		zs = reduceExternal(root, z);
 	}
 	return e;
 }
 
-
+// 후위순회 해제
+void putnode(node* root) {
+	if (root == NULL) return;
+	putnode(root->lchild);
+	putnode(root->rchild);
+	free(root);
+}
 
 int main() {
 	char command;
@@ -319,7 +320,8 @@ int main() {
 	int deleteKey;
 
 	// 트리 루트 초기화
-	init();
+	node* root = NULL;
+	root = init();
 
 	while (1) {
 		scanf("%c", &command);
@@ -328,13 +330,13 @@ int main() {
 			// 삽입
 		case 'i':
 			scanf("%d", &key);
-			insertItem(key);
+			insertItem(&root, key);
 			break;
 
 			//삭제
 		case 'd':
 			scanf("%d", &key);
-			deleteKey = removeElement(key);
+			deleteKey = removeElement(&root, key);
 			if (deleteKey == -1) printf("%c\n", 'X');
 			else printf("%d\n", deleteKey);
 			break;
@@ -342,7 +344,7 @@ int main() {
 			//탐색
 		case 's':
 			scanf("%d", &key);
-			searchKey = findElement(key);
+			searchKey = findElement(root,key);
 			if (searchKey == -1) printf("%c\n", 'X');
 			else printf("%d\n", searchKey);
 			break;
@@ -355,6 +357,7 @@ int main() {
 
 			//종료
 		case 'q':
+			putnode(root);
 			exit(0);
 			break;
 		}

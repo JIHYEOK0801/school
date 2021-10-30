@@ -9,9 +9,6 @@ typedef struct node {
 	struct node* parent, * lchild, * rchild;
 }node;
 
-// root 접근성용이를 위해 전역변수 설정
-node* root = NULL;
-
 // node 생성 후 바로 return. 초기화하는 변수는 없음.
 node* getNode() {
 	node* p = (node*)malloc(sizeof(node));
@@ -24,14 +21,23 @@ void setNode(node* w, int k) {
 }
 
 // 트리 초기화 함수. 외부노드 한개만 존재한다.
-void init() {
-	if (root == NULL) {
-		root = getNode();
+node* init() {
+	node* newnode = getNode();
+	newnode->lchild = NULL;
+	newnode->rchild = NULL;
+	newnode->parent = NULL;
+	return newnode;
+}
 
-		root->lchild = NULL;
-		root->rchild = NULL;
-		root->parent = NULL;
+node* sibling(node* w) {
+	if (isRoot(w)) {
+		printf("invalidNodeException\n");
+		exit(0);
 	}
+	if (w->parent->lchild == w)
+		return w->parent->rchild;
+	else
+		return w->parent->lchild;
 }
 
 // node w가 root인지 확인
@@ -76,12 +82,12 @@ void expandExternal(node* z) {
 }
 
 // 외부노드인 z를 없애는 함수.
-node* reduceExternal(node* z) {
+node* reduceExternal(node **root, node* z) {
 	node* w = z->parent;
 	node* zs = sibling(z);
 	node* g;
 	if (isRoot(w)) {
-		root = zs;
+		*root = zs;
 		zs->parent = NULL;
 	}
 	else {
@@ -112,19 +118,10 @@ node* treeSearch(node *v, int k) {
 }
 
 // 형제 노드를 검색하는 함수 && 정상적으로 코딩했으면 root 노드가 들어올 일이 없음.
-node* sibling(node* w) {
-	if (isRoot(w)) {
-		printf("invalidNodeException\n");
-		exit(0);
-	}
-	if (w->parent->lchild == w)
-		return w->parent->rchild;
-	else
-		return w->parent->lchild;
-}
+
 
 // key = k 인 node 삽입
-void insertItem(int k) {
+void insertItem(node *root, int k) {
 	node* w = treeSearch(root, k);
 	if (isInternal(w))
 		return;
@@ -135,7 +132,7 @@ void insertItem(int k) {
 }
 
 // key == k인 노드 검색 후 key return
-int findElement(int k) {
+int findElement(node* root, int k) {
 	node* w = treeSearch(root, k);
 	if (isExternal(w))
 		return -1;
@@ -157,8 +154,8 @@ node* inOrderSucc(node* w) {
 }
 
 // key == k인 node를 삭제하는 함수.
-int removeElement(int k) {
-	node* w = treeSearch(root, k);
+int removeElement(node** root, int k) {
+	node* w = treeSearch(*root, k);
 
 	// key == k 인 노드가 없을 때
 	if (isExternal(w)) return -1;
@@ -171,12 +168,12 @@ int removeElement(int k) {
 	node* y;
 
 	if (isExternal(z))
-		reduceExternal(z);
+		reduceExternal(root, z);
 	else {
 		y = inOrderSucc(w);
 		z = y->lchild;
 		setNode(w, y->key);
-		reduceExternal(z);
+		reduceExternal(root, z);
 	}
 	return e;
 }
@@ -191,6 +188,14 @@ void print(node* w) {
 	print(w->rchild);
 }
 
+// 후위순회 해제
+void putnode(node* root) {
+	if (root == NULL) return;
+	putnode(root->lchild);
+	putnode(root->rchild);
+	free(root);
+}
+
 int main() {
 	char command;
 	int key;
@@ -198,7 +203,8 @@ int main() {
 	int deleteKey;
 	
 	// 트리 루트 초기화
-	init();
+	node* root = NULL;
+	root = init();
 	
 	while (1) {
 		scanf("%c", &command);
@@ -207,13 +213,13 @@ int main() {
 		// 삽입
 		case 'i':
 			scanf("%d", &key);
-			insertItem(key);
+			insertItem(root, key);
 			break;
 
 		//삭제
 		case 'd':
 			scanf("%d", &key);
-			deleteKey = removeElement(key);
+			deleteKey = removeElement(&root, key);
 			if (deleteKey == -1) printf("%c\n", 'X');
 			else printf("%d\n", deleteKey);
 			break;
@@ -221,7 +227,7 @@ int main() {
 		//탐색
 		case 's':
 			scanf("%d", &key);
-			searchKey = findElement(key);
+			searchKey = findElement(root, key);
 			if (searchKey == -1) printf("%c\n", 'X');
 			else printf("%d\n", searchKey);
 			break;
@@ -234,9 +240,12 @@ int main() {
 
 		//종료
 		case 'q':
+			putnode(root);
 			exit(0);
 			break;
 		}
 		getchar();
 	}
+
+
 }
