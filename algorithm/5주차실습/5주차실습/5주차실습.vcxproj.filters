@@ -111,5 +111,14 @@
     <ClCompile Include="9-해시테이블-문제3.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="과제4-1108-문제1.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="과제4-1108-문제2.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="과제4-1108-문제3.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
