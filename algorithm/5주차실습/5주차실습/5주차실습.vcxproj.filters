@@ -126,5 +126,11 @@
     <ClCompile Include="10-그래프표현-문제2.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="11-그래프순회-문제1.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="11-그래프순회-문제2.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
